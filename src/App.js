@@ -3,7 +3,7 @@ import { useState } from 'react';
 function Square({ value, onSquareClick }) {
   return <button className="square" onClick={onSquareClick}>{value}</button>;
 }
-export function Board({ xIsNext, squares, onPlay }) {
+export function Board({ xIsNext, squares, currentMove, onPlay }) {
   function handleClick(i) {
     if (squares[i] || calculateWinner(squares)) {
       return;
@@ -20,7 +20,9 @@ export function Board({ xIsNext, squares, onPlay }) {
 
   return (
     <>
-      <div className="status">{status}</div>
+      <div className="status">
+        {status}
+      </div>
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -57,6 +59,14 @@ export default function Game() {
   }
 
   const moves = history.map((squares, move) => {
+    if (move === currentMove) {
+      return (
+        <li key={move}>
+          You are at move #{currentMove + 1}
+        </li>
+      );
+    }
+
     let description = move ? `Go to move #${move}` : 'Go to game start';
 
     return (
@@ -71,10 +81,12 @@ export default function Game() {
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board xIsNext={xIsNext} squares={currentSquares} currentMove={currentMove} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>{moves}</ol>
+        <ol>
+          {moves}
+        </ol>
       </div>
     </div>
   );
